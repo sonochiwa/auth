@@ -25,24 +25,27 @@ func NewWebServer(logger *zap.Logger, cfg *config.WebServerConfig) *WebServer {
 
 func (w *WebServer) RegisterRoutes(routes []controllers.Controller) {
 	for _, route := range routes {
-		w.log.Error(
-			"Register controller",
-			zap.String("controller", reflect.TypeOf(route).Elem().Name()),
-			zap.String("path", route.GetPath()),
-			zap.String("method", route.GetMethod()),
-		)
-		switch route.GetMethod() {
-		case "GET":
-			w.client.Get(route.GetPath(), route.GetHandler())
-		case "POST":
-			w.client.Post(route.GetPath(), route.GetHandler())
-		default:
-			w.log.Error(
-				"Unsupported method",
-				zap.String("controller", reflect.TypeOf(route).Name()),
-				zap.String("path", route.GetPath()),
-				zap.String("method", route.GetMethod()),
-			)
+		group := w.client.Group(route.GetGroup())
+		for _, handler := range route.GetHandlers() {
+			switch handler.GetMethod() {
+			case "GET":
+				group.Get(handler.GetPath(), handler.GetHandler())
+			case "POST":
+				group.Post(handler.GetPath(), handler.GetHandler())
+			case "PUT":
+				group.Put(handler.GetPath(), handler.GetHandler())
+			case "PATCH":
+				group.Patch(handler.GetPath(), handler.GetHandler())
+			case "DELETE":
+				group.Delete(handler.GetPath(), handler.GetHandler())
+
+			default:
+				w.log.Error("Unsupported method",
+					zap.String("controller", reflect.TypeOf(route).Elem().Name()),
+					zap.String("path", handler.GetPath()),
+					zap.String("method", handler.GetMethod()),
+				)
+			}
 		}
 	}
 }

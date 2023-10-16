@@ -47,3 +47,11 @@ func (m *MongoDB) Release() {
 		m.client.Disconnect(context.TODO())
 	}
 }
+
+func (m *MongoDB) GetDB() *mongo.Database {
+	return m.client.Database(m.cfg.Database)
+}
+
+func (m *MongoDB) GetCollection(name string) *mongo.Collection {
+	return m.GetDB().Collection(name)
+}

@@ -33,7 +33,7 @@ func main() {
 	}
 	logger.Info("Connecting to MongoDB")
 	wApp := web.NewWebServer(logger, &cfg.Web)
-	registerRoutes(logger, wApp)
+	registerRoutes(logger, mongoClient, wApp)
 	go wApp.Run()
 
 	// Graceful shutdown
@@ -48,10 +48,10 @@ func runWebServer(logger *zap.Logger, cfg *config.WebServerConfig) {
 	app.Listen(fmt.Sprintf(":%d", cfg.Port))
 }
 
-func registerRoutes(logger *zap.Logger, wApp *web.WebServer) {
+func registerRoutes(logger *zap.Logger, mongoClient *mongodb.MongoDB, wApp *web.WebServer) {
 	logger.Info("Register routes")
 
-	userService := services.NewUserService(logger)
+	userService := services.NewUserService(logger, mongoClient)
 
 	wApp.RegisterRoutes([]controllers.Controller{
 		controllers.NewAuthController(logger, userService),
