@@ -5,6 +5,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+type WebServerConfig struct {
+	Port int
+}
+
 type MongoDBConnectionConfig struct {
 	Host     string
 	Port     int
@@ -15,6 +19,7 @@ type MongoDBConnectionConfig struct {
 
 type Config struct {
 	Mongo MongoDBConnectionConfig `mapstructure:"mongodb"`
+	Web   WebServerConfig         `mapstructure:"web"`
 }
 
 func InitConfiguration() *Config {
@@ -33,6 +38,8 @@ func (c *Config) loadDefault() {
 	viper.SetDefault("mongodb.database", "auth")
 	viper.SetDefault("mongodb.username", "root")
 	viper.SetDefault("mongodb.password", "root")
+
+	viper.SetDefault("web.port", 8080)
 }
 
 func (c *Config) loadFile() {

@@ -26,7 +26,7 @@ func NewMongoDB(logger *zap.Logger, cfg *config.MongoDBConnectionConfig) *MongoD
 }
 
 func (m *MongoDB) Connect() error {
-	uri := fmt.Sprintf("mongodb://%s:%s@%s:%d/%s", m.cfg.Username, m.cfg.Password, m.cfg.Host, m.cfg.Port, m.cfg.Database)
+	uri := fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin", m.cfg.Username, m.cfg.Password, m.cfg.Host, m.cfg.Port, m.cfg.Database)
 
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI(uri).SetServerAPIOptions(serverAPI)
