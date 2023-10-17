@@ -12,34 +12,41 @@ import (
 )
 
 type MongoDB struct {
-	client *mongo.Client
-	log    *zap.Logger
-	cfg    *config.MongoDBConnectionConfig
+	client    *mongo.Client
+	log       *zap.Logger
+	cfg       *config.MongoDBConnectionConfig
+	connected bool
 }
 
 func NewMongoDB(logger *zap.Logger, cfg *config.MongoDBConnectionConfig) *MongoDB {
 	return &MongoDB{
-		client: nil,
-		log:    logger,
-		cfg:    cfg,
+		client:    nil,
+		log:       logger,
+		cfg:       cfg,
+		connected: false,
 	}
 }
 
 func (m *MongoDB) Connect() error {
+	var err error
 	uri := fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=admin", m.cfg.Username, m.cfg.Password, m.cfg.Host, m.cfg.Port, m.cfg.Database)
 
-	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-	opts := options.Client().ApplyURI(uri).SetServerAPIOptions(serverAPI)
-	client, err := mongo.Connect(context.TODO(), opts)
+	opts := options.Client().ApplyURI(uri)
+	m.client, err = mongo.Connect(context.TODO(), opts)
 	if err != nil {
 		return err
 	}
 	var result bson.M
-	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{"ping", 1}}).Decode(&result); err != nil {
+	if err := m.client.Database("admin").RunCommand(context.TODO(), bson.M{"ping": 1}).Decode(&result); err != nil {
 		return err
 	}
 
+	m.connected = true
 	return nil
+}
+
+func (m *MongoDB) IsConnected() bool {
+	return m.connected
 }
 
 func (m *MongoDB) Release() {

@@ -26,6 +26,7 @@ func NewUserService(logger *zap.Logger, mongoClient *mongodb.MongoDB, db *sqlx.D
 	return &UserService{
 		log:         logger,
 		mongoClient: mongoClient,
+		dbClient:    db,
 		collection:  "users",
 	}
 }
@@ -35,7 +36,7 @@ var UserAlreadyExistsError = fmt.Errorf("user already exists")
 func (s *UserService) GetByGuid(guid string) (*models.User, error) {
 	var user *models.User
 	collection := s.mongoClient.GetCollection("users")
-	err := collection.FindOne(context.TODO(), bson.M{"guid": guid}).Decode(user)
+	err := collection.FindOne(context.TODO(), bson.M{"guid": guid}).Decode(&user)
 	if err != nil {
 		return nil, err
 	}
@@ -45,8 +46,10 @@ func (s *UserService) GetByGuid(guid string) (*models.User, error) {
 func (s *UserService) GetByLogin(login string) (*models.User, error) {
 	var user *models.User
 	collection := s.mongoClient.GetCollection("users")
-	err := collection.FindOne(context.TODO(), bson.M{"login": login}).Decode(user)
-	if err != nil {
+	err := collection.FindOne(context.TODO(), bson.M{"login": login}).Decode(&user)
+	if err == mongo.ErrNoDocuments {
+		return nil, nil
+	} else if err != nil {
 		return nil, err
 	}
 	return user, nil
@@ -55,11 +58,11 @@ func (s *UserService) GetByLogin(login string) (*models.User, error) {
 func (s *UserService) Register(login string, password string) (*models.User, error) {
 	var user *models.User
 	collections := s.mongoClient.GetCollection(s.collection)
-	_, err := s.GetByLogin(login)
-
-	if err != mongo.ErrNilDocument {
+	existedUser, err := s.GetByLogin(login)
+	if existedUser != nil {
 		return nil, UserAlreadyExistsError
 	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +87,7 @@ func (s *UserService) Register(login string, password string) (*models.User, err
 		return nil, err
 	}
 
-	sql := `INSERT INTO passwords (user_guid, password, expired_at) VALUES ($1, $2, $3)`
+	sql := `INSERT INTO passwords (user_id, password, expired_at) VALUES ($1, $2, $3)`
 	hashedPwd, err := s.HashPassword(password)
 
 	if err != nil {

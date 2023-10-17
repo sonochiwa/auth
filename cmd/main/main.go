@@ -33,7 +33,13 @@ func main() {
 	if err != nil {
 		logger.Fatal("Failed connect to MongoDB!", zap.Error(err))
 	}
-	logger.Info("Connecting to MongoDB")
+	for {
+		if mongoClient.IsConnected() {
+			logger.Info("Connecting to MongoDB")
+			break
+		}
+		time.Sleep(1 * time.Second)
+	}
 
 	logger.Info("Connecting to Postgres")
 	dbClient, err := db.NewDBConnection(&cfg.DB)
