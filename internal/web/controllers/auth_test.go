@@ -7,19 +7,19 @@ import (
 
 func TestAuthRequestValidation(t *testing.T) {
 	testCases := []struct {
-		AuthRequest *AuthRequest
-		Valid       bool
-		Error       error
+		Request *AuthRequest
+		Valid   bool
+		Error   error
 	}{
 		{
-			AuthRequest: &AuthRequest{
+			Request: &AuthRequest{
 				Login:    "login",
 				Password: "password",
 			},
 			Valid: true,
 		},
 		{
-			AuthRequest: &AuthRequest{
+			Request: &AuthRequest{
 				Login:    "",
 				Password: "password",
 			},
@@ -27,7 +27,7 @@ func TestAuthRequestValidation(t *testing.T) {
 			Error: LoginRequiredError,
 		},
 		{
-			AuthRequest: &AuthRequest{
+			Request: &AuthRequest{
 				Login:    "login",
 				Password: "",
 			},
@@ -37,8 +37,18 @@ func TestAuthRequestValidation(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		valid, err := testCase.AuthRequest.Validate()
+		valid, err := testCase.Request.Validate()
 		require.Equal(t, testCase.Valid, valid)
 		require.Equal(t, testCase.Error, err)
 	}
+}
+
+func TestAuthControllerCreation(t *testing.T) {
+	c := NewAuthController(nil, nil)
+	require.Equal(t, c, &AuthController{})
+}
+
+func TestAuthControllerGroup(t *testing.T) {
+	c := NewAuthController(nil, nil)
+	require.Equal(t, "/auth", c.GetGroup())
 }

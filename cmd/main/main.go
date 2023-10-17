@@ -82,5 +82,6 @@ func registerRoutes(logger *zap.Logger, mongoClient *mongodb.MongoDB, db *sqlx.D
 
 	wApp.RegisterRoutes([]controllers.Controller{
 		controllers.NewAuthController(logger, userService),
+		controllers.NewRegisterController(logger, userService),
 	})
 }
