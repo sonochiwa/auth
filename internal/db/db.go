@@ -18,10 +18,10 @@ func NewDBConnection(cfg *config.DBConnectionConfig) (*sqlx.DB, error) {
 	switch cfg.Type {
 	case "postgres":
 		db, err = sqlx.Open("postgres", fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s "+
-			"sslmode=disalbe", cfg.Host, cfg.Port, cfg.Username, cfg.Password, cfg.Database))
+			"sslmode=disable", cfg.Host, cfg.Port, cfg.Username, cfg.Password, cfg.Database))
 	case "mysql":
 		db, err = sqlx.Open("mysql", fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s "+
-			"sslmode=disalbe", cfg.Host, cfg.Port, cfg.Username, cfg.Password, cfg.Database))
+			"sslmode=disable", cfg.Host, cfg.Port, cfg.Username, cfg.Password, cfg.Database))
 	default:
 		return nil, fmt.Errorf("unknown db type %s", cfg.Type)
 	}
@@ -37,6 +37,7 @@ func NewDBConnection(cfg *config.DBConnectionConfig) (*sqlx.DB, error) {
 	return db, nil
 }
 
+//go:embed migrations/*.sql
 var embedMigrations embed.FS
 
 func ApplyMigrations(dbType string, db *sqlx.DB) error {
