@@ -12,7 +12,7 @@ type LoginType struct {
 }
 
 type User struct {
-	ID          primitive.ObjectID `bson:"_id"`
+	ID          primitive.ObjectID `bson:"_id" json:"-"`
 	GUID        string             `bson:"guid" json:"guid"`
 	Login       string             `bson:"login" json:"login"`
 	LoginType   LoginType          `bson:"login_type" json:"login_type"`

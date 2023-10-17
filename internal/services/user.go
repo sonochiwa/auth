@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"github.com/jmoiron/sqlx"
 	"github.com/sonochiwa/auth/internal/mongodb"
 	"github.com/sonochiwa/auth/internal/mongodb/models"
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,10 +12,11 @@ import (
 type UserService struct {
 	log         *zap.Logger
 	mongoClient *mongodb.MongoDB
+	dbClient    *sqlx.DB
 	collection  string
 }
 
-func NewUserService(logger *zap.Logger, mongoClient *mongodb.MongoDB) *UserService {
+func NewUserService(logger *zap.Logger, mongoClient *mongodb.MongoDB, db *sqlx.DB) *UserService {
 	return &UserService{
 		log:         logger,
 		mongoClient: mongoClient,

@@ -1,0 +1,18 @@
+mode: set
+github.com/sonochiwa/auth/internal/web/controllers/auth.go:19.47,20.23 1 1
+github.com/sonochiwa/auth/internal/web/controllers/auth.go:20.23,22.3 1 1
+github.com/sonochiwa/auth/internal/web/controllers/auth.go:24.2,24.26 1 1
+github.com/sonochiwa/auth/internal/web/controllers/auth.go:24.26,26.3 1 1
+github.com/sonochiwa/auth/internal/web/controllers/auth.go:28.2,28.18 1 1
+github.com/sonochiwa/auth/internal/web/controllers/auth.go:44.92,49.2 1 0
+github.com/sonochiwa/auth/internal/web/controllers/auth.go:51.44,53.2 1 0
+github.com/sonochiwa/auth/internal/web/controllers/auth.go:55.60,63.2 1 0
+github.com/sonochiwa/auth/internal/web/controllers/auth.go:65.65,66.34 1 0
+github.com/sonochiwa/auth/internal/web/controllers/auth.go:66.34,69.44 3 0
+github.com/sonochiwa/auth/internal/web/controllers/auth.go:69.44,71.4 1 0
+github.com/sonochiwa/auth/internal/web/controllers/auth.go:73.3,73.54 1 0
+github.com/sonochiwa/auth/internal/web/controllers/auth.go:73.54,78.4 1 0
+github.com/sonochiwa/auth/internal/web/controllers/auth.go:80.3,87.5 1 0
+github.com/sonochiwa/auth/internal/web/controllers/controller.go:22.38,24.2 1 0
+github.com/sonochiwa/auth/internal/web/controllers/controller.go:26.36,28.2 1 0
+github.com/sonochiwa/auth/internal/web/controllers/controller.go:30.57,32.2 1 0
