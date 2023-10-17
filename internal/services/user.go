@@ -87,7 +87,7 @@ func (s *UserService) Register(login string, password string) (*models.User, err
 		return nil, err
 	}
 
-	sql := `INSERT INTO passwords (user_id, password, expired_at) VALUES ($1, $2, $3)`
+	sql := `INSERT INTO passwords (user_guid, password, expired_at) VALUES ($1, $2, $3)`
 	hashedPwd, err := s.HashPassword(password)
 
 	if err != nil {
