@@ -20,8 +20,9 @@ func NewDBConnection(cfg *config.DBConnectionConfig) (*sqlx.DB, error) {
 		db, err = sqlx.Open("postgres", fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s "+
 			"sslmode=disable", cfg.Host, cfg.Port, cfg.Username, cfg.Password, cfg.Database))
 	case "mysql":
-		db, err = sqlx.Open("mysql", fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s "+
-			"sslmode=disable", cfg.Host, cfg.Port, cfg.Username, cfg.Password, cfg.Database))
+		db, err = sqlx.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", cfg.Username, cfg.Password,
+			cfg.Host, cfg.Port, cfg.Database))
+
 	default:
 		return nil, fmt.Errorf("unknown db type %s", cfg.Type)
 	}
