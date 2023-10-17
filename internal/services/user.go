@@ -92,13 +92,19 @@ func (s *UserService) Register(login string, password string) (*models.User, err
 
 	if err != nil {
 		s.log.Error("Error while hashing password", zap.Error(err))
-		err = s.DeleteById(insertResult.InsertedID.(primitive.ObjectID))
+		err2 := s.DeleteById(insertResult.InsertedID.(primitive.ObjectID))
+		if err2 != nil {
+			return nil, err2
+		}
 		return nil, err
 	}
 	_, err = s.dbClient.Exec(sql, userGuid, hashedPwd, time.Now().Add(time.Hour*24))
 	if err != nil {
 		s.log.Error("Error while saving password", zap.Error(err))
-		err := s.DeleteById(insertResult.InsertedID.(primitive.ObjectID))
+		err2 := s.DeleteById(insertResult.InsertedID.(primitive.ObjectID))
+		if err2 != nil {
+			return nil, err2
+		}
 		return nil, err
 	}
 
